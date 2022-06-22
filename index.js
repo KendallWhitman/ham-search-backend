@@ -11,7 +11,7 @@ app.use(cors({
 app.get('/hamdb/:callsign', async (req, res) => {
   const { callsign } = req.params;
 
-  if (callsign) {
+  if ((/[a-z,A-Z,0-9]/).test(callsign) && !!callsign) {
     try {
       const response = await fetch(`http://api.hamdb.org/${callsign}/json/hamsearch`);
       const data = await response.json();
