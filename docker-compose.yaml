@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  hamsearchbackend:
+    build: .
+    restart: always
+    container_name: hamsearchbackend
+    ports:
+      - 8005:8005
