@@ -5,7 +5,7 @@ const app = express();
 const port = 8005
 
 app.use(cors({
-  origin: ['http://localhost:8004'],
+  origin: ['https://dev.hamsearch.io', 'https://hamsearch.io'],
 }));
 
 app.get('/hamdb/:callsign', async (req, res) => {
