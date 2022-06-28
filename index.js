@@ -1,6 +1,8 @@
 import fetch from 'node-fetch';
 import express from 'express';
 import cors from 'cors';
+import { licenseClasses, licenseStatus } from './utils/index.js';
+
 const app = express();
 const port = 8005
 
@@ -12,29 +14,17 @@ app.use(cors({
   ],
 }));
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   res.send({ status: 'EMPTY' });
 });
 
 app.get('/:callsign', async (req, res) => {
   const { callsign } = req.params;
   const isValid = (/[a-z,A-Z,0-9]/).test(callsign);
-  
-  const licenseClasses = {
-    T: "Technician",
-    G: "General",
-    E: "Extra",
-  };
-
-  const licenseStatus = {
-    A: "Active",
-    E: "Expired",
-  };
 
   if (isValid) {
     try {
-      const hamdbUrl = `http://api.hamdb.org/${callsign}/json/hamsearch`
-      const response = await fetch(hamdbUrl);
+      const response = await fetch(`http://api.hamdb.org/${callsign}/json/hamsearch`);
       const { hamdb } = await response.json();
       const data = {
         ...hamdb.callsign,
@@ -42,7 +32,7 @@ app.get('/:callsign', async (req, res) => {
         status: hamdb.messages.status,
       };
 
-      const formattedData = {
+      res.send({
         address: data.addr1,
         address2: `${data.addr2 && `${data.addr2},`} ${data.state && `${data.state}.`} ${data.zip}`,
         callsign: data.call,
@@ -55,9 +45,7 @@ app.get('/:callsign', async (req, res) => {
         lon: data.lon,
         name: `${data.fname} ${data.name}`,
         status: data.status,
-      }
-
-      res.send(formattedData);
+      });
     } catch (err) {
       res.send({ status: 'ERROR' });
     }
