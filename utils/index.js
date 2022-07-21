@@ -8,4 +8,5 @@ export const licenseClasses = {
 export const licenseStatus = {
   A: "Active",
   E: "Expired",
+  C: "Canceled",
 };
