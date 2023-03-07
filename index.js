@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import express from 'express';
 import cors from 'cors';
-import { licenseClasses, licenseStatus } from './utils/index.js';
+import { licenseClasses, licenseStatus, countryCodes } from './utils/index.js';
 
 const app = express();
 const port = 8005
@@ -32,6 +32,9 @@ app.get('/:callsign', async (req, res) => {
         status: hamdb.messages.status,
       };
 
+      const { code } = countryCodes.find(({ name }) => name === data.country);
+      const flagUrl = `https://flagcdn.com/${code}.svg`;
+
       res.send({
         address: data.addr1,
         address2: `${data.addr2 && `${data.addr2},`} ${data.state && `${data.state}.`} ${data.zip}`,
@@ -39,6 +42,7 @@ app.get('/:callsign', async (req, res) => {
         cls: licenseClasses[data.class] || data.class,
         country: data.country,
         expires: data.expires,
+        flag: flagUrl,
         grid: data.grid,
         lat: data.lat,
         licenseStatus: licenseStatus[data.licenseStatus] || data.licenseStatus,
